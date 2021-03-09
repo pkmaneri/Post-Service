@@ -1,9 +1,12 @@
 const express = require('express')
+var cors = require('cors')
 const MongoClient = require('mongodb').MongoClient;
 const bodyParser = require('body-parser');
 const path = require('path')
 const app = express()
-const port = 3000
+const port = 4000
+app.use(cors())
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use('/public', express.static(path.join(__dirname, 'public')))
@@ -50,6 +53,18 @@ app.get('/posts', (req, res) => {
         })
     })
 })
+
+// http://localhost:3000/v1/searchByTopicAndIntereset?
+
+app.get('/v1/searchByTopicAndIntereset', (req, res) => {
+  getDBConnection(function(db){
+      findDocuments(db, function(data){
+          return res.send(data)
+      })
+  })
+})
+
+
 
 app.post('/post', (req, res) => {
     console.log(req.body)
